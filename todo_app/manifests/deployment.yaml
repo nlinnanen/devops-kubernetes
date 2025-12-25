@@ -12,6 +12,18 @@ spec:
       labels:
         app: todo-app 
     spec:
+      volumes:
+        - name: shared-todo
+          persistentVolumeClaim:
+            claimName: todo-claim
       containers:
         - name: todo-app 
-          image: nlinnanen/todo_app:latest
+          image: nlinnanen/todo_app:v2
+          env:
+            - name: IMAGE_URL
+              value: "https://picsum.photos/1200"
+            - name: IMAGE_PATH
+              value: "/app/static/image.jpg"
+          volumeMounts:
+            - name: shared-todo
+              mountPath: "/app/static"
