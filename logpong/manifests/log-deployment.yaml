@@ -15,6 +15,9 @@ spec:
       volumes:
         - name: log-volume
           emptyDir: {}
+        - name: shared-logpong
+          persistentVolumeClaim:
+            claimName: logpong-claim
       containers:
         - name: writer 
           image: nlinnanen/log_output_writer:v2
@@ -25,12 +28,16 @@ spec:
             - name: log-volume
               mountPath: "/logs"
         - name: server
-          image: nlinnanen/log_output_server:v1
+          image: nlinnanen/log_output_server:v2
           env:
-            - name: FILE_PATH
+            - name: LOG_PATH
               value: "/logs/output.txt"
             - name: PORT
               value: "8080"
+            - name: COUNT_PATH
+              value: "/count/output.txt"
           volumeMounts:
+            - name: shared-logpong
+              mountPath: "/count"
             - name: log-volume
               mountPath: "/logs"
