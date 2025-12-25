@@ -20,6 +20,9 @@ RUN apk add --no-cache ca-certificates
 WORKDIR /app
 COPY --from=build /out/app /app/app
 
+COPY ./templates ./templates
+COPY ./static ./static
+
 # common convention
 ENV PORT=8080
 EXPOSE 8080
