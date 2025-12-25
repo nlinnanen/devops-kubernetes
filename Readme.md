@@ -14,3 +14,4 @@
 - [1.10](https://github.com/nlinnanen/devops-kubernetes/tree/1.10/logpong/log_output)
 - [1.11](https://github.com/nlinnanen/devops-kubernetes/tree/1.11/logpong)
 - [1.12](https://github.com/nlinnanen/devops-kubernetes/tree/1.12/todo_app)
+- [1.13](https://github.com/nlinnanen/devops-kubernetes/tree/1.13/todo_app)
