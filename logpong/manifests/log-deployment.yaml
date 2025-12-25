@@ -1,17 +1,36 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: pong-dep
+  name: log-output-dep
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: pong 
+      app: log-output 
   template:
     metadata:
       labels:
-        app: pong 
+        app: log-output 
     spec:
+      volumes:
+        - name: log-volume
+          emptyDir: {}
       containers:
-        - name: pong 
-          image: nlinnanen/pong:v1
+        - name: writer 
+          image: nlinnanen/log_output_writer:v1
+          env:
+            - name: OUTPUT_PATH
+              value: "/logs/output.txt"
+          volumeMounts:
+            - name: log-volume
+              mountPath: "/logs"
+        - name: server
+          image: nlinnanen/log_output_server:v1
+          env:
+            - name: FILE_PATH
+              value: "/logs/output.txt"
+            - name: PORT
+              value: "8080"
+          volumeMounts:
+            - name: log-volume
+              mountPath: "/logs"
