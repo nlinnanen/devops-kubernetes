@@ -17,7 +17,7 @@ spec:
           emptyDir: {}
       containers:
         - name: writer 
-          image: nlinnanen/log_output_writer:v1
+          image: nlinnanen/log_output_writer:v2
           env:
             - name: OUTPUT_PATH
               value: "/logs/output.txt"
