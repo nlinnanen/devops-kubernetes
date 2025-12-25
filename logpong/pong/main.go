@@ -9,8 +9,25 @@ import (
 func handlePongCreator(count int) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		count += 1
+
+		err := writeCountToFile(count)
+		if err != nil {
+			http.Error(w, "failed to write count to file", http.StatusInternalServerError)
+			return
+		}
+
 		fmt.Fprintln(w, "pong ", count)
 	}
+}
+
+func writeCountToFile(count int) error {
+	path := os.Getenv("COUNT_FILE")
+	if path == "" {
+		path = "./count.txt"
+	}
+
+	data := fmt.Sprintf("%d", count)
+	return os.WriteFile(path, []byte(data), 0644)
 }
 
 func main() {
