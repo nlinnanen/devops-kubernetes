@@ -8,19 +8,34 @@ import (
 )
 
 func handler(w http.ResponseWriter, r *http.Request) {
-	filePath := os.Getenv("FILE_PATH")
+	filePath := os.Getenv("LOG_PATH")
 	if filePath == "" {
-		http.Error(w, "FILE_PATH not set", http.StatusInternalServerError)
-		log.Printf("error: FILE_PATH not set")
+		http.Error(w, "LOG_PATH not set", http.StatusInternalServerError)
+		log.Printf("error: LOG_PATH not set")
 		return
 	}
 
-	data, err := os.ReadFile(filePath)
+	logData, err := os.ReadFile(filePath)
 	if err != nil {
 		http.Error(w, "failed to read file", http.StatusInternalServerError)
 		log.Printf("error reading %s: %v", filePath, err)
 		return
 	}
+
+	countFilePath := os.Getenv("COUNT_PATH")
+	if countFilePath == "" {
+		countFilePath = "../../pong/count.txt"
+	}
+
+	countData, err := os.ReadFile(countFilePath)
+	if err != nil {
+		http.Error(w, "failed to read count file", http.StatusInternalServerError)
+		log.Printf("error reading %s: %v", countFilePath, err)
+		return
+	}
+
+	data := append(logData, []byte("\nPing / Pongs: ")...)
+	data = append(data, countData...)
 
 	w.Header().Set("Content-Type", "text/plain; charset=utf-8")
 	w.WriteHeader(http.StatusOK)
@@ -30,7 +45,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 func main() {
 	port := os.Getenv("PORT")
 	if port == "" {
-		port = "8080"
+		port = "8880"
 	}
 	http.HandleFunc("/log", handler)
 
