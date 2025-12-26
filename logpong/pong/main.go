@@ -34,7 +34,7 @@ func main() {
 	}
 
 	http.HandleFunc("/pingpong", handlePong)
-	http.HandleFunc("/count", handleCount)
+	http.HandleFunc("/pingpong/count", handleCount)
 
 	fmt.Println("Server started in port " + port)
 	addr := ":" + port
