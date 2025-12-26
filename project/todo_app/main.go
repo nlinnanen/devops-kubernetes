@@ -122,6 +122,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 
 	err = templates.ExecuteTemplate(w, "index.html", map[string]any{
 		"ImagePath": "/static/image.jpg",
+		"TodoUrl":   todoUrl,
 		"Todos":     todos,
 	})
 	if err != nil {

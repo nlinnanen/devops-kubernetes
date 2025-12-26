@@ -10,19 +10,17 @@
 <body>
   <h1>The project app</h1>
   <img src="{{.ImagePath}}" alt="Random image from picsum.photos" style="max-width:30%; height:auto;">
-  <form>
-    <div style="display: flex;">
-      <input type="text" name="task" placeholder="New task">
-      <button type="submit">Create todo</button>
-    </div>
-    <ul>
-      {{range .Todos}}
-      <li>{{.}}</li>
-      {{else}}
-      <li>No todos yet!</li>
-      {{end}}
-    </ul>
+  <form style="display: flex;" method="POST" action="{{ .TodoUrl }}">
+    <input type="text" name="todo" placeholder="New todo">
+    <button type="submit">Create todo</button>
   </form>
+  <ul>
+    {{range .Todos}}
+    <li>{{.}}</li>
+    {{else}}
+    <li>No todos yet!</li>
+    {{end}}
+  </ul>
   <p>DevOps with Kubernetes 2025</p>
 </body>
 
