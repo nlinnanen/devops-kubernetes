@@ -16,3 +16,4 @@
 - [1.12](https://github.com/nlinnanen/devops-kubernetes/tree/1.12/todo_app)
 - [1.13](https://github.com/nlinnanen/devops-kubernetes/tree/1.13/todo_app)
 - [2.1](https://github.com/nlinnanen/devops-kubernetes/tree/2.1/logpong)
+- [2.2](https://github.com/nlinnanen/devops-kubernetes/tree/2.2/project)
