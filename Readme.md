@@ -25,3 +25,4 @@ k3d cluster create --port 8082:30080@agent:0 -p 8081:80@loadbalancer --agents 2
 - [2.2](https://github.com/nlinnanen/devops-kubernetes/tree/2.2/project)
 - [2.3](https://github.com/nlinnanen/devops-kubernetes/tree/2.3/project)
 - [2.4](https://github.com/nlinnanen/devops-kubernetes/tree/2.4/project)
+- [2.5](https://github.com/nlinnanen/devops-kubernetes/tree/2.5/exercises)
