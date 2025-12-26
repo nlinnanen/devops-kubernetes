@@ -12,16 +12,9 @@ spec:
       labels:
         app: pong 
     spec:
-      volumes:
-        - name: shared-logpong
-          persistentVolumeClaim:
-            claimName: logpong-claim
       containers:
         - name: pong 
-          image: nlinnanen/pong:v2
+          image: nlinnanen/pong:v4
           env:
             - name: COUNT_FILE
               value: "/logs/output.txt"
-          volumeMounts:
-            - name: shared-logpong
-              mountPath: "/logs"
