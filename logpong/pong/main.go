@@ -4,30 +4,27 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"sync"
 )
 
-func handlePongCreator(count int) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		count += 1
+var (
+	mu    sync.Mutex
+	count int
+)
 
-		err := writeCountToFile(count)
-		if err != nil {
-			http.Error(w, "failed to write count to file", http.StatusInternalServerError)
-			return
-		}
-
-		fmt.Fprintln(w, "pong ", count)
-	}
+func handlePong(w http.ResponseWriter, r *http.Request) {
+	mu.Lock()
+	count++
+	c := count
+	mu.Unlock()
+	fmt.Fprintln(w, "pong ", c)
 }
 
-func writeCountToFile(count int) error {
-	path := os.Getenv("COUNT_FILE")
-	if path == "" {
-		path = "./count.txt"
-	}
-
-	data := fmt.Sprintf("%d", count)
-	return os.WriteFile(path, []byte(data), 0644)
+func handleCount(w http.ResponseWriter, r *http.Request) {
+	mu.Lock()
+	c := count
+	mu.Unlock()
+	fmt.Fprintln(w, c)
 }
 
 func main() {
@@ -36,8 +33,8 @@ func main() {
 		port = "8080"
 	}
 
-	count := 0
-	http.HandleFunc("/pingpong", handlePongCreator(count))
+	http.HandleFunc("/pingpong", handlePong)
+	http.HandleFunc("/count", handleCount)
 
 	fmt.Println("Server started in port " + port)
 	addr := ":" + port
