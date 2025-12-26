@@ -9,17 +9,38 @@ import (
 )
 
 func handler(w http.ResponseWriter, r *http.Request) {
-	filePath := os.Getenv("LOG_PATH")
-	if filePath == "" {
+	logFilePath := os.Getenv("LOG_PATH")
+	if logFilePath == "" {
 		http.Error(w, "LOG_PATH not set", http.StatusInternalServerError)
 		log.Printf("error: LOG_PATH not set")
 		return
 	}
 
-	logData, err := os.ReadFile(filePath)
+	logData, err := os.ReadFile(logFilePath)
+	if err != nil {
+		http.Error(w, "failed to read file", http.StatusInternalServerError)
+		log.Printf("error reading %s: %v", logFilePath, err)
+		return
+	}
+
+	filePath := os.Getenv("FILE_PATH")
+	if filePath == "" {
+		http.Error(w, "FILE_PATH not set", http.StatusInternalServerError)
+		log.Printf("error: FILE_PATH not set")
+		return
+	}
+
+	fileData, err := os.ReadFile(filePath)
 	if err != nil {
 		http.Error(w, "failed to read file", http.StatusInternalServerError)
 		log.Printf("error reading %s: %v", filePath, err)
+		return
+	}
+
+	message := os.Getenv("MESSAGE")
+	if message == "" {
+		http.Error(w, "MESSAGE not set", http.StatusInternalServerError)
+		log.Printf("error: MESSAGE not set")
 		return
 	}
 
@@ -49,7 +70,10 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	data := append(logData, []byte("\nPing / Pongs: ")...)
+	data := append([]byte(message+"\n"), fileData...)
+	data = append(data, []byte("\n")...)
+	data = append(data, logData...)
+	data = append(data, []byte("Ping / Pongs: ")...)
 	data = append(data, countData...)
 
 	w.Header().Set("Content-Type", "text/plain; charset=utf-8")
