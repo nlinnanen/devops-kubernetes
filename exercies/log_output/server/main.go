@@ -9,6 +9,8 @@ import (
 )
 
 func handler(w http.ResponseWriter, r *http.Request) {
+	log.Println("Received request for /log")
+
 	logFilePath := os.Getenv("LOG_PATH")
 	if logFilePath == "" {
 		http.Error(w, "LOG_PATH not set", http.StatusInternalServerError)
@@ -70,7 +72,8 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	data := append([]byte(message+"\n"), fileData...)
+	data := append([]byte("file content:\n"), fileData...)
+	data = append(data, []byte("env variable: MESSAGE="+message+"\n")...)
 	data = append(data, []byte("\n")...)
 	data = append(data, logData...)
 	data = append(data, []byte("Ping / Pongs: ")...)
@@ -81,14 +84,20 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	_, _ = w.Write(data)
 }
 
+func logHandler(w http.ResponseWriter, r *http.Request) {
+	log.Println("Received request for /log")
+	fmt.Fprintln(w, "Log endpoint is working")
+}
+
 func main() {
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "8880"
 	}
-	http.HandleFunc("/log", handler)
+	http.HandleFunc("/", handler)
+	http.HandleFunc("/log", logHandler)
 
-	fmt.Println("Server started in port " + port)
+	log.Println("Server started in port " + port)
 	addr := ":" + port
 	err := http.ListenAndServe(addr, nil)
 	if err != nil {

@@ -16,6 +16,12 @@ spec:
       volumes:
         - name: log-volume
           emptyDir: {}
+        - name: config-volume
+          configMap:
+            name: log-output-config
+            items:
+              - key: information.txt
+                path: information.txt
       containers:
         - name: writer 
           image: nlinnanen/log_output_writer:v2
@@ -26,7 +32,7 @@ spec:
             - name: log-volume
               mountPath: "/logs"
         - name: server
-          image: nlinnanen/log_output_server:v3
+          image: nlinnanen/log_output_server:v8
           env:
             - name: LOG_PATH
               value: "/logs/output.txt"
@@ -34,6 +40,15 @@ spec:
               value: "8080"
             - name: COUNT_URL
               value: "http://pong-svc:2345/pingpong/count"
+            - name: FILE_PATH
+              value: "/config/information.txt"
+            - name: MESSAGE
+              valueFrom:
+                configMapKeyRef:
+                  name: log-output-config
+                  key: message
           volumeMounts:
             - name: log-volume
               mountPath: "/logs"
+            - name: config-volume
+              mountPath: "/config"

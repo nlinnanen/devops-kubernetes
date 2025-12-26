@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: log-output-config
+  namespace: exercises
+data:
+  message: "Test from ConfigMap"
+  information.txt: |
+    This is some information
+    stored in a file-like key
+    inside a ConfigMap.  

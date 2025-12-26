@@ -6,8 +6,8 @@ metadata:
 spec:
   type: ClusterIP
   selector:
-    app: pong 
+    app: log-output
   ports:
-    - port: 2346
+    - port: 2345
       protocol: TCP
       targetPort: 8080
