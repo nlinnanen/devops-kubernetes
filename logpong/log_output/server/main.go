@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"io"
 	"log"
 	"net/http"
 	"os"
@@ -22,15 +23,29 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	countFilePath := os.Getenv("COUNT_PATH")
-	if countFilePath == "" {
-		countFilePath = "../../pong/count.txt"
+	countURL := os.Getenv("COUNT_URL")
+	if countURL == "" {
+		countURL = "http://localhost:8080/pingpong/count"
 	}
 
-	countData, err := os.ReadFile(countFilePath)
+	resp, err := http.Get(countURL)
 	if err != nil {
-		http.Error(w, "failed to read count file", http.StatusInternalServerError)
-		log.Printf("error reading %s: %v", countFilePath, err)
+		http.Error(w, "failed to fetch count", http.StatusInternalServerError)
+		log.Printf("error fetching %s: %v", countURL, err)
+		return
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		http.Error(w, "failed to fetch count", http.StatusInternalServerError)
+		log.Printf("unexpected status from %s: %s", countURL, resp.Status)
+		return
+	}
+
+	countData, err := io.ReadAll(resp.Body)
+	if err != nil {
+		http.Error(w, "failed to read count response", http.StatusInternalServerError)
+		log.Printf("error reading response from %s: %v", countURL, err)
 		return
 	}
 
