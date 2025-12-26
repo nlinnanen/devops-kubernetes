@@ -16,9 +16,11 @@
       <button type="submit">Create todo</button>
     </div>
     <ul>
-      <li>Learn kubernetes</li>
-      <li>Deploy applications</li>
-      <li>Master DevOps</li>
+      {{range .Todos}}
+      <li>{{.}}</li>
+      {{else}}
+      <li>No todos yet!</li>
+      {{end}}
     </ul>
   </form>
   <p>DevOps with Kubernetes 2025</p>

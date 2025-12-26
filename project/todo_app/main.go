@@ -1,6 +1,8 @@
 package main
 
 import (
+	"encoding/json"
+	"errors"
 	"html/template"
 	"io"
 	"log"
@@ -15,6 +17,7 @@ var (
 
 	imageURL  = os.Getenv("IMAGE_URL")  // required
 	imagePath = os.Getenv("IMAGE_PATH") // default: ./static/image.jpg
+	todoUrl   = os.Getenv("TODO_URL")   // required
 
 	mu           sync.Mutex
 	lastDownload time.Time
@@ -88,11 +91,38 @@ func ensureFreshImage() {
 	log.Printf("image downloaded to %s at %s", imagePath, now.Format(time.RFC3339))
 }
 
+func getTodos() ([]string, error) {
+	resp, err := http.Get(todoUrl)
+	if err != nil {
+		return nil, errors.New("failed to fetch todos")
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, errors.New("failed to fetch todos")
+	}
+
+	var todos []string
+	err = json.NewDecoder(resp.Body).Decode(&todos)
+	if err != nil {
+		return nil, errors.New("failed to decode todos")
+	}
+
+	return todos, nil
+}
+
 func handler(w http.ResponseWriter, r *http.Request) {
 	go ensureFreshImage()
 
-	err := templates.ExecuteTemplate(w, "index.html", map[string]any{
+	todos, err := getTodos()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	err = templates.ExecuteTemplate(w, "index.html", map[string]any{
 		"ImagePath": "/static/image.jpg",
+		"Todos":     todos,
 	})
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
