@@ -1,11 +1,12 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: todo-claim 
+  name: todo-claim
+  namespace: project 
 spec:
-  storageClassName: todo-pv 
+  storageClassName: todo-pv
   accessModes:
-    - ReadWriteOnce
+  - ReadWriteOnce
   resources:
     requests:
       storage: 1Gi
