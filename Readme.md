@@ -1,5 +1,11 @@
 # Devops with Kubernetes
 
+Cluster can be created with
+
+```bash
+k3d cluster create --port 8082:30080@agent:0 -p 8081:80@loadbalancer --agents 2
+```
+
 ## Exercises
 
 - [1.1](https://github.com/nlinnanen/devops-kubernetes/tree/1.1/log_output)
