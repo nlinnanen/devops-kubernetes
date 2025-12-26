@@ -10,7 +10,7 @@
 <body>
   <h1>The project app</h1>
   <img src="{{.ImagePath}}" alt="Random image from picsum.photos" style="max-width:30%; height:auto;">
-  <form style="display: flex;" method="POST" action="{{ .TodoUrl }}">
+  <form style="display: flex;" method="POST" action="http://localhost:8081/todos">
     <input type="text" name="todo" placeholder="New todo">
     <button type="submit">Create todo</button>
   </form>
