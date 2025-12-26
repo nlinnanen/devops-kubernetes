@@ -18,12 +18,14 @@ spec:
             claimName: todo-claim
       containers:
         - name: todo-app 
-          image: nlinnanen/todo_app:v2
+          image: nlinnanen/todo_app:v4
           env:
             - name: IMAGE_URL
               value: "https://picsum.photos/1200"
             - name: IMAGE_PATH
               value: "/app/static/image.jpg"
+            - name: TODO_URL
+              value: "http://todo-backend-svc:2345/todos"
           volumeMounts:
             - name: shared-todo
               mountPath: "/app/static"
